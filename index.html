@@ -3,10 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vogelhaus Messdaten</title>
+    <title>Vogelhaus Daten</title>
 </head>
 <body>
-    <h1>Bewegungsdaten im Vogelhaus</h1>
-    <p>Daten werden hier bald visualisiert...</p>
+    <h1>Bewegungsdaten aus dem Vogelhaus</h1>
+    <pre id="data">Lade Daten...</pre>
+
+    <script>
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('data').textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => console.error('Fehler beim Laden der Daten:', error));
+    </script>
 </body>
 </html>
