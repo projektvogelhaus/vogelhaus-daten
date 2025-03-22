@@ -3,19 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vogelhaus Daten</title>
+    <title>Vogelhaus Bewegungsdaten</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        canvas { max-width: 600px; margin: 20px auto; }
+    </style>
 </head>
 <body>
     <h1>Bewegungsdaten aus dem Vogelhaus</h1>
-    <pre id="data">Lade Daten...</pre>
+    <canvas id="motionChart"></canvas>
 
     <script>
-        fetch('data.json')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('data').textContent = JSON.stringify(data, null, 2);
-            })
-            .catch(error => console.error('Fehler beim Laden der Daten:', error));
+        async function fetchData() {
+            const response = await fetch("data.json");  // Holt die JSON-Datei
+            const data = await response.json();
+
+            const timestamps = [data.timestamp];
+            const values = [data.motion_detected ? 1 : 0];
+
+            const ctx = document.getElementById("motionChart").getContext("2d");
+            new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: timestamps,
+                    datasets: [{
+                        label: "Bewegung erkannt (1=Ja, 0=Nein)",
+                        data: values,
+                        borderColor: "blue",
+                        fill: false
+                    }]
+                },
+                options: { responsive: true }
+            });
+        }
+        fetchData();
     </script>
 </body>
 </html>
